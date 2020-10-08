@@ -1,10 +1,12 @@
 var divRow = $("<div class='row'>");
 var divCol = $("<div class='col-12'>");
+divCol.css("padding-left","0px");
+divCol.css("padding-right","0px");
 var inputCity = $("<input type='text' id='inputCity' placeholder='Enter city name'>");
 var submitCity = $("<button id='submitCity'>Submit</button>");
 var heading = $("<h1 style='text-align:center;'>Weather</h1>").css("text-algin","center");
 
-$(".container").append(divRow);
+$("#containEverything").append(divRow);
 $(divRow).append(divCol);
 $(divCol).append(heading);
 $(divCol).append(inputCity);
@@ -25,7 +27,7 @@ $("#submitCity").on("click", function(){
         // Create a new table row element
         //   var tRow = $("<tr>");
         console.log(response);
-        var currentTemp = kelvinToCelsius(response.main.temp) + "\u00B0" +"F";
+        var currentTemp = kelvinToCelsius(response.main.temp);
         var humidity = response.main.humidity +"%";
         var windSpeed = response.wind.speed+" MPH";
         var cityName = response.name;
@@ -35,6 +37,9 @@ $("#submitCity").on("click", function(){
         var cityHeading = $("<h1>");
         var weatherInfo = $("<p>");
         var date = new Date();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var year = date.getFullYear();
 
         jumbotron.addClass("jumbotron jumbotron-fluid");
         container.addClass("container");
@@ -42,7 +47,7 @@ $("#submitCity").on("click", function(){
         weatherInfo.addClass("lead");
 
         cityHeading.text(cityName);
-        cityHeading.append("&nbsp;&nbsp;&nbsp;&nbsp;"+"("+ date.getMonth()+"/"+date.getDate()+"/"+date.getFullYear()+")");
+        cityHeading.append(" &nbsp;"+" ("+ month +"/"+day+"/"+year+")");
         weatherInfo.text("Temperature: " + currentTemp);
         weatherInfo.append("<br>");
         weatherInfo.append("Humidity: "+humidity);
@@ -86,6 +91,70 @@ $("#submitCity").on("click", function(){
                 // var uvIndex = response.value;
                 console.log(response);
                 // weatherInfo.append("UV Index: "+uvIndex);
+
+                // <div class="card" style="width: 18rem;">
+                // <img class="card-img-top" src="..." alt="Card image cap">
+                // <div class="card-body">
+                // <h5 class="card-title">Card title</h5>
+                // <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                // <a href="#" class="btn btn-primary">Go somewhere</a>
+                // </div>
+                // </div>
+                var fiveDayForecastRow = $("<div>");
+                fiveDayForecastRow.addClass("row");
+                // fiveDayForecastRow.css("text-align","center");
+                $("#containEverything").append("<h3>5-Day Forecast:</h3>");
+                // fiveDayForecastRow.append("<br>");
+                // fiveDayForecastRow.append("<br>");
+
+                // <div class="row">
+                // <div class="col-sm-6">
+                // <div class="card">
+                // <div class="card-body">
+                // <h5 class="card-title">Special title treatment</h5>
+                // <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                // <a href="#" class="btn btn-primary">Go somewhere</a>
+                // </div>
+                // </div>
+                // </div>
+                // <div class="col-sm-6">
+                // <div class="card">
+                // <div class="card-body">
+                // <h5 class="card-title">Special title treatment</h5>
+                // <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                // <a href="#" class="btn btn-primary">Go somewhere</a>
+                // </div>
+                // </div>
+                // </div>
+                // </div>
+
+
+                for(var i = 0; i < 5; i++) {
+                    var divCard = $("<div>");
+                    var divCardBody = $("<div>");
+                    var newDay = date.getDate() + (i+1);
+                    var newDate = new Date();
+                    var futureTemp = kelvinToCelsius(response.daily[i+1].temp.day);
+                    var futureHumidity = response.daily[i+1].humidity;
+                    divCard.addClass("card");
+                    // divCard.addClass("w-25");
+                    divCard.css("width","20%");
+                    divCardBody.addClass("card-body");
+
+                    divCard.append(divCardBody);
+                    fiveDayForecastRow.append(divCard);
+                    $("#containEverything").append(fiveDayForecastRow);
+
+                    newDate.setDate(newDay);
+                    divCardBody.append(newDate.getMonth()+"/"+newDate.getDate()+"/"+newDate.getFullYear());
+                    divCardBody.append("<br>");
+                    divCardBody.append("Temp: " + futureTemp);
+                    divCardBody.append("<br>");
+                    divCardBody.append("Humidity: " + futureHumidity +"%");
+
+
+
+                }
             });
         });
 });
@@ -98,5 +167,5 @@ $("#submitCity").on("click", function(){
 
 function kelvinToCelsius(kelvin) {
     var celsius =  kelvin - 273.15;
-    return Math.round(celsius * 9 / 5 + 32);
+    return Math.round(celsius * 9 / 5 + 32) + "\u00B0" + "F";
 }
