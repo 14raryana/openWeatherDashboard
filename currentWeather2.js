@@ -6,6 +6,10 @@ var inputCity = $("<input type='text' id='inputCity' placeholder='Enter city nam
 var submitCity = $("<button id='submitCity'>Submit</button>");
 var heading = $("<h1 style='text-align:center;'>Weather</h1>").css("text-algin","center");
 
+var weatherIcon;
+var weatherIconUrl;
+var weatherIconDisplay = $("<img>");
+
 $("#containEverything").append(divRow);
 $(divRow).append(divCol);
 $(divCol).append(heading);
@@ -41,13 +45,29 @@ $("#submitCity").on("click", function(){
         var day = date.getDate();
         var year = date.getFullYear();
 
+        weatherIcon = response.weather[0].icon;
+        weatherIconUrl = "http://openweathermap.org/img/wn/"+weatherIcon+"@2x.png";
+        // weatherIconDisplay = $("<img>");
+        weatherIconDisplay.attr("src",weatherIconUrl);
+        // weatherIconDisplay.css("background-color","white");
+
+
+        
+
+
         jumbotron.addClass("jumbotron jumbotron-fluid");
+        jumbotron.css("background-color","silver");
+        // jumbotron.css("border","5px solid");
         container.addClass("container");
         cityHeading.addClass("display-4");
         weatherInfo.addClass("lead");
 
         cityHeading.text(cityName);
         cityHeading.append(" &nbsp;"+" ("+ month +"/"+day+"/"+year+")");
+        cityHeading.append(weatherIconDisplay);
+        
+
+
         weatherInfo.text("Temperature: " + currentTemp);
         weatherInfo.append("<br>");
         weatherInfo.append("Humidity: "+humidity);
@@ -107,26 +127,6 @@ $("#submitCity").on("click", function(){
                 // fiveDayForecastRow.append("<br>");
                 // fiveDayForecastRow.append("<br>");
 
-                // <div class="row">
-                // <div class="col-sm-6">
-                // <div class="card">
-                // <div class="card-body">
-                // <h5 class="card-title">Special title treatment</h5>
-                // <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                // <a href="#" class="btn btn-primary">Go somewhere</a>
-                // </div>
-                // </div>
-                // </div>
-                // <div class="col-sm-6">
-                // <div class="card">
-                // <div class="card-body">
-                // <h5 class="card-title">Special title treatment</h5>
-                // <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                // <a href="#" class="btn btn-primary">Go somewhere</a>
-                // </div>
-                // </div>
-                // </div>
-                // </div>
 
 
                 for(var i = 0; i < 5; i++) {
@@ -136,6 +136,13 @@ $("#submitCity").on("click", function(){
                     var newDate = new Date();
                     var futureTemp = kelvinToCelsius(response.daily[i+1].temp.day);
                     var futureHumidity = response.daily[i+1].humidity;
+
+                    var futureWeatherIcon = response.daily[i+1].weather[0].icon;
+                    var futureWeatherIconUrl = "http://openweathermap.org/img/wn/"+futureWeatherIcon+"@2x.png";
+                    var futureWeatherIconDisplay = $("<img>");
+                    futureWeatherIconDisplay.attr("src",futureWeatherIconUrl);
+
+
                     divCard.addClass("card");
                     // divCard.addClass("w-25");
                     divCard.css("width","20%");
@@ -148,6 +155,10 @@ $("#submitCity").on("click", function(){
                     newDate.setDate(newDay);
                     divCardBody.append(newDate.getMonth()+"/"+newDate.getDate()+"/"+newDate.getFullYear());
                     divCardBody.append("<br>");
+
+                    divCardBody.append(futureWeatherIconDisplay);
+                    divCardBody.append("<br>");
+
                     divCardBody.append("Temp: " + futureTemp);
                     divCardBody.append("<br>");
                     divCardBody.append("Humidity: " + futureHumidity +"%");
